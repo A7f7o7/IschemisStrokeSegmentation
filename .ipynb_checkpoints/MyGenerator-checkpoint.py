@@ -99,6 +99,7 @@ class MyDataset(Dataset):
         multimodal[1, ...] = Cropped_dwi_RESImage
         multimodal[2, ...] = Cropped_flair_RESImage
         
+        multimodal = np.transpose(multimodal, (1, 2, 3, 0))
         
 
         if (normalize==True):
@@ -110,8 +111,9 @@ class MyDataset(Dataset):
             std = np.std(CroppedRESSeg)
             normalized_CroppedRESSeg = (CroppedRESSeg - mean) / std
             
-        #if self.transform != None:
-           # multimodal = self.transform(multimodal)
+        if self.transform != None:
+            for i in range(0,2):
+                multimodal[i] = self.transform(multimodal[i])
             
             return normalized_multimodal, normalized_CroppedRESSeg
         else:
